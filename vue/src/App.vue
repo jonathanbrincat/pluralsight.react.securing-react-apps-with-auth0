@@ -1,24 +1,28 @@
 <template lang="pug">
-  #app
-    Nav(:auth="auth")
-    .body
-      RouterView(:auth="auth")
+    #app
+        Nav(:auth="auth")
+        .body
+            RouterView(:auth="auth")
 </template>
 
 <script>
 import Nav from "./components/Nav.vue";
-import Auth from "./Auth/Auth";
+// import Auth from "./Auth/Auth";
 
 export default {
-  name: "App",
+    name: "App",
 
-  components: {
-    Nav,
-  },
-  
-  created() {
-    this.auth = new Auth(this.$router);
-  },
+    components: {
+        Nav,
+    },
+
+    props: {
+        auth: Object
+    },
+
+    // created() {
+    //     this.auth = new Auth(this.$router);
+    // },
 };
 </script>
 

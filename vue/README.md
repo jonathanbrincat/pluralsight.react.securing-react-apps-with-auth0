@@ -1,8 +1,5 @@
-# Vue.js and persistance of state
-
-## About
-Vue.js exploration into handling reactivity with Local Storage to maintain persistance of state.
-Vue CLI base.
+# Vue.js Auth0
+Implementation of the Pluralsight course - Securing React Apps with Auth0 by Cory House - ported to Vue.js and tweeked accordingly 
 
 ## Project setup
 ```

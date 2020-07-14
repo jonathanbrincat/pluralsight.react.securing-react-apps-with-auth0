@@ -1,50 +1,33 @@
 <template lang="pug">
-  h1 Loading...
+    h1 Loading...
 </template>
 
 <script>
 export default {
-  name: "Callback",
+    name: "Callback",
 
-  props: {
-    auth: Object,
-  },
+    props: {
+        auth: Object,
+    },
 
-  created() {
-    // Handle authentication if expected values are present in the URL. Let's look for these expected values using a regex.
-    if (/access_token|id_token|error/.test(this.$route.hash)) {
+    async created() {
+        // Handle authentication if expected values are present in the URL. Let's look for these expected values using a regex.
+        if(/access_token|id_token|error/.test(this.$route.hash)) {
 
-      this.auth.handleAuthentication().then((authResult) => {
-        // this.setSession(authResult)
+            const authResult = await this.auth.handleAuthentication().catch(() => {});
 
-        const expiresAt = JSON.stringify(
-          authResult.expiresIn * 1000 + new Date().getTime()
-        );
-        
-        this.$localStorage.tokenExpiry = expiresAt;
+            console.log('CALLBACK.VUE login');
 
-      }, (error) => {
-        console.log(error);
-      });
+            const expiresAt = JSON.stringify(
+                authResult.expiresIn * 1000 + new Date().getTime()
+            );
 
-    } else {
-      throw new Error("Invalid callback URL.");
-    }
+            this.$store.dispatch('setToken', expiresAt);
+            this.$localStorage.token = expiresAt;
 
-    // this.$router.push("/");
-  },
-
-  methods: {
-    setSession(authResult) {
-      // set the time that the access token will expire
-      const expiresAt = JSON.stringify(
-        authResult.expiresIn * 1000 + new Date().getTime()
-      );
-
-      localStorage.setItem("access_token", authResult.accessToken);
-      localStorage.setItem("id_token", authResult.idToken);
-      this.$localStorage.tokenExpiry = expiresAt;
-    }
-  }
+        }else {
+            throw new Error("Invalid callback URL.");
+        }
+    },
 };
 </script>

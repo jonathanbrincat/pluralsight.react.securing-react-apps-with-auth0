@@ -7,15 +7,13 @@ export default class Auth {
         this.requestedScopes = "openid profile email read:courses";
 
         this.auth0 = new Auth0.WebAuth({
-            domain: process.env.VUE_APP_AUTH0_DOMAIN,
-            clientID: process.env.VUE_APP_AUTH0_CLIENT_ID,
-            redirectUri: process.env.VUE_APP_AUTH0_CALLBACK_URL,
-            audience: process.env.VUE_APP_AUTH0_AUDIENCE, // Auth0 api identifier - the token sent by Auth0 will be associated with this audience
+            domain: process.env.REACT_APP_AUTH0_DOMAIN,
+            clientID: process.env.REACT_APP_AUTH0_CLIENT_ID,
+            redirectUri: process.env.REACT_APP_AUTH0_CALLBACK_URL,
+            audience: process.env.REACT_APP_AUTH0_AUDIENCE, // Auth0 api identifier - the token sent by Auth0 will be associated with this audience
             responseType: "token id_token", // token = access token to access services/API id_token is our JET identification token
             scope: this.requestedScopes,
         });
-
-        this.onChange = () => {};
     }
 
     login = () => {
@@ -29,18 +27,17 @@ export default class Auth {
 
         // this.history.push('/').catch(() => {});
         this.auth0.logout({
-            clientID: process.env.VUE_APP_AUTH0_CLIENT_ID,
-            returnTo: "http://localhost:8080",
+            clientID: process.env.REACT_APP_AUTH0_CLIENT_ID,
+            returnTo: "http://localhost:3000",
         });
 
-        this.onChange(false, null); // TEST
         resolve();
     });
 
     // Auth0 callback => handler
     handleAuthentication = () => new Promise((resolve, reject) => {
-        this.auth0.parseHash( (error, authResult) => {
-            console.log("parseHash :vue: ", authResult, ' :: ', error);
+        this.auth0.parseHash((error, authResult) => {
+            console.log("parseHash :react: ", authResult);
 
             if(authResult && authResult.accessToken && authResult.idToken) {
                 // if we have an authenticated user let's set a session for them and prime the application for access to resources/services
@@ -48,15 +45,13 @@ export default class Auth {
 
                 this.history.push('/');
 
-                this.onChange(true, authResult); // TEST
                 resolve(authResult);
             }else if(error) {
                 this.history.push('/');
 
                 alert(`Error: ${error.error}. Check the console for further details.`);
-                console.log(error.error);
+                console.log(error);
 
-                this.onChange(false, null); // TEST
                 reject(error);
             }
         });
@@ -91,8 +86,6 @@ export default class Auth {
             new Date().getTime() < JSON.parse(localStorage.getItem('expires_at'))
         );
     }
-
-    // onChange() {}
 
     getAccessToken() {
         const accessToken = localStorage.getItem('access_token');
