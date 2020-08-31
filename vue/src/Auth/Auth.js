@@ -1,5 +1,9 @@
 import Auth0 from 'auth0-js';
 
+const REDIRECT_ON_LOGIN = "redirect_on_login";
+const ID_TOKEN = "id_token";
+const ACCESS_TOKEN = "access_token";
+
 export default class Auth {
     constructor(router) {
         this.history = router;
@@ -19,6 +23,9 @@ export default class Auth {
     }
 
     login = () => {
+        // DEVNOTE: because vue-router constructs a getter/setter we can not treat as object and stringify - complains about circular references - so strictly speaking we don't need to stringify or parse
+        localStorage.setItem(REDIRECT_ON_LOGIN, JSON.stringify(this.history.currentRoute.path)); // remember where user was when login request was made
+
         this.auth0.authorize(); // redirect browser to Auth0 login page/widget
     };
 
@@ -46,7 +53,12 @@ export default class Auth {
                 // if we have an authenticated user let's set a session for them and prime the application for access to resources/services
                 this.setSession(authResult);
 
-                this.history.push('/');
+                const redirectLocation =
+                    localStorage.getItem(REDIRECT_ON_LOGIN) === "undefined"
+                        ? "/"
+                        : JSON.parse(localStorage.getItem(REDIRECT_ON_LOGIN));
+                this.history.push(redirectLocation); //redirect to point user left off
+                // this.history.push('/');
 
                 this.onChange(true, authResult); // TEST
                 resolve(authResult);
@@ -59,6 +71,8 @@ export default class Auth {
                 this.onChange(false, null); // TEST
                 reject(error);
             }
+
+            localStorage.removeItem(REDIRECT_ON_LOGIN); //clean up
         });
     });
 
@@ -72,16 +86,16 @@ export default class Auth {
         // Otherwise use the scopes as requested. If no scopes were requested, set it to nothing.
         const scopes = authResult.scope || this.requestedScopes | "";
 
-        localStorage.setItem('access_token', authResult.accessToken);
-        localStorage.setItem('id_token', authResult.idToken);
+        localStorage.setItem(ACCESS_TOKEN, authResult.accessToken);
+        localStorage.setItem(ID_TOKEN, authResult.idToken);
         // DEVNOTE: for convenience we store these too to avoid the overhead of parsing the JWT every time we want to read the data
         localStorage.setItem('expires_at', expiresAt);
         localStorage.setItem('scopes', JSON.stringify(scopes));
     };
 
     removeSession = () => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('id_token');
+        localStorage.removeItem(ACCESS_TOKEN);
+        localStorage.removeItem(ID_TOKEN);
         localStorage.removeItem('expires_at');
         localStorage.removeItem('scopes');
     };
@@ -95,7 +109,7 @@ export default class Auth {
     // onChange() {}
 
     getAccessToken() {
-        const accessToken = localStorage.getItem('access_token');
+        const accessToken = localStorage.getItem(ACCESS_TOKEN);
 
         if(!accessToken) {
             throw new Error("No access token found.");

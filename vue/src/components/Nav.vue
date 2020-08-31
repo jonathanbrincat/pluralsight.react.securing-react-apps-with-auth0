@@ -37,27 +37,27 @@
 
 <script>
 export default {
-    name: "Nav",
+  name: "Nav",
 
-    props: {
-        auth: Object,
+  props: {
+    auth: Object,
+  },
+
+  methods: {
+    async logout() {
+      await this.auth.logout();
+
+      console.log("NAV.VUE logout");
+
+      this.$store.dispatch("removeToken");
+      this.$localStorage.token = null;
     },
-
-    methods: {
-        async logout() {
-            await this.auth.logout();
-
-            console.log('NAV.VUE logout');
-
-            this.$store.dispatch('removeToken');
-            this.$localStorage.token = null;
-        },
-    },
+  },
 };
 </script>
 
 <style scoped lang="scss">
-    /*ul li li {
+/*ul li li {
         display: block;
         float: none;
         margin: 0 20px;
