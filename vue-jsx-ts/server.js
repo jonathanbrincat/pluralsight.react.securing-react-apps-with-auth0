@@ -5,6 +5,9 @@ const jwt = require("express-jwt"); // Validate JWT and set requent.user
 const jwtRsa = require("jwks-rsa"); // Retrieve RSA key from a JSON web key set(JWKS) endpoint(the one that Auth0 exposes under our domain/tenant)
 const checkScope = require("express-jwt-authz"); // Validates JWT scopes
 
+const DOMAIN = "api.catalyz.co.uk";
+const PORT = process.env.PORT || 3000;
+
 /* const {
   VUE_APP_AUTH0_DOMAIN,
   VUE_APP_AUTH0_AUDIENCE,
@@ -50,6 +53,12 @@ const server = express();
 // server.use(jwtCheck); //DEVNOTE: would implement cross-wide need for authorisation token on all request from this server; circumventing the 'jwtCheck' function callback
 
 server.get("/", function(request, response) {
+  response.statusCode = 200;
+  response.setHeader("Content-Type", "text/plain");
+  response.end("api.catalyz.co.uk\nWelcome\n");
+});
+
+server.get("/public", function(request, response) {
   response.json({
     message: "Hello from a public API!",
   });
@@ -86,4 +95,4 @@ server.get("/admin", jwtCheck, checkRole("admin"), function(request, response) {
 
 server.listen(3333);
 // console.log("API server listening on " + VUE_APP_API_URL);
-console.log("API server listening on https://api.catalyz.co.uk");
+console.log(`API server listening on http://${DOMAIN}:${PORT}`);
