@@ -8,24 +8,22 @@ export default class Home extends Vue {
   public readonly auth!: any;
 
   render(h: Function): VNode {
+    const { isAuthenticated, login } = this.auth;
+
     return (
       <div>
         <h1>Home</h1>
 
-        {this.$store.getters.isAuthenticated ? (
+        {/* {this.$store.getters.isAuthenticated ? ( */}
+        {isAuthenticated() ? (
           <router-link to="/profile">View Profile</router-link>
         ) : (
-          <button onClick={this.auth.login}>Log in</button>
+          <button onClick={login}>Log In</button>
         )}
 
-        <p>auth.isAuthenticated = {this.auth.isAuthenticated().toString()}</p>
-        <p>
-          vuex.isAuthenticated ={this.$store.getters.isAuthenticated.toString()}
-        </p>
-        <p>
-          $localStorage.isAuthenticated =
-          {$localStorage.isAuthenticated.toString()}
-        </p>
+        <p>auth.isAuthenticated = {isAuthenticated().toString()}</p>
+        {/* <p>{`vuex.isAuthenticated =  ${this.$store.getters.isAuthenticated.toString()}`}</p>
+        <p>{`$localStorage.isAuthenticated = ${$localStorage.isAuthenticated.toString()}`}</p> */}
       </div>
     );
   }

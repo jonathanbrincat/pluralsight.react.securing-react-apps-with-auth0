@@ -5,11 +5,11 @@
         RouterLink(to="/profile" v-if="$store.getters.isAuthenticated") View Profile
         button(@click="auth.login" v-else) Log In
 
-    //-
         p auth.isAuthenticated = {{ auth.isAuthenticated() }}
-        p vuex getter: {{ $store.getters.isAuthenticated }}
-        p $localStorage: {{ $localStorage.isAuthenticated }}
+        p vuex.isAuthenticated = {{ $store.getters.isAuthenticated }}
+        p $localStorage.isAuthenticated = {{ $localStorage.isAuthenticated }}
 
+    //-
         hr
 
         h3 GLOBAL REACTIVITY IMPLEMENTATION
@@ -25,21 +25,21 @@
 
 <script>
 export default {
-    name: "Home",
+  name: "Home",
 
-    props: {
-        auth: Object
+  props: {
+    auth: Object,
+  },
+
+  methods: {
+    async logout() {
+      await this.auth.logout();
+
+      console.log("HOME.VUE logout");
+
+      this.$store.dispatch("removeToken");
+      this.$localStorage.token = null;
     },
-
-    methods: {
-        async logout() {
-            await this.auth.logout();
-
-            console.log('HOME.VUE logout');
-
-            this.$store.dispatch('removeToken');
-            this.$localStorage.token = null;
-        },
-    },
+  },
 };
 </script>

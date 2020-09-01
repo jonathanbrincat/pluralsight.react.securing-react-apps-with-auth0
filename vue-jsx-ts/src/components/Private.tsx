@@ -13,7 +13,7 @@ export default class Private extends Vue {
       headers: {
         Authorization: `Bearer ${this.auth.getAccessToken()}`,
       },
-    })
+    }) // DEVNOTE: cc. proxy => vue.config.js
       .then((response) => {
         if (response.ok) return response.json();
         throw new Error("Network response was not ok.");

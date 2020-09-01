@@ -37,10 +37,10 @@ export default class Profile extends Vue {
         <h1>Profile</h1>
         {this.profile && (
           <div>
-            <h2>{this.profile.nickname}</h2>
+            <p>{this.profile.nickname}</p>
             <img
               src={this.profile.pic}
-              alt="profile pic"
+              alt="User profile avatar"
               style={{ maxWidth: "50px", maxHeight: "50px" }}
             />
             <pre>{JSON.stringify(this.profile, null, 4)}</pre>

@@ -46,16 +46,16 @@ const store: VuexStore<object> = new VuexStore({
     },
   },
 
-  getters: {
+  /* getters: {
     isAuthenticated: (state: any) => {
       const expiresAt: number = JSON.parse(state.token);
       return new Date().getTime() < expiresAt;
     },
-  },
+  }, */
 });
 
 // proxy localstorage assignments through vue so we can make it reactive
-export const $localStorage = new Vue({
+/*export const $localStorage = new Vue({
   // Vue.prototype.$localStorage = new Vue({
   data: {
     // reactive property assigned to a localstorage key/value
@@ -66,19 +66,18 @@ export const $localStorage = new Vue({
   computed: {
     isAuthenticated(): boolean {
       if (!this.token.length) return false;
-      console.log("fuck ", this.token);
       const expiresAt = JSON.parse(this.token);
       return new Date().getTime() < expiresAt;
     },
   },
 
-  /*watch:{ 
+  watch:{ 
        // watcher listening for changes on the delegated property to ensure the new value is written back to localstorage 
        token(value) { 
          value ? localStorage.setItem('expires_at', value) : localStorage.removeItem('expires_at');
        }
-    }*/
-});
+  }
+});*/
 
 function isAuthenticated(to: any, from: any, next: any): Function {
   // if(auth.isAuthenticated()) return next();
