@@ -1,6 +1,6 @@
 import { Vue, Prop, Component } from "vue-property-decorator";
 import { VNode } from "Vue";
-import { $localStorage } from "../main";
+// import { $localStorage } from "../main";
 
 @Component({})
 export default class Callback extends Vue {
