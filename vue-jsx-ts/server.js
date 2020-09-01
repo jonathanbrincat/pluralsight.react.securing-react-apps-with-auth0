@@ -5,6 +5,12 @@ const jwt = require("express-jwt"); // Validate JWT and set requent.user
 const jwtRsa = require("jwks-rsa"); // Retrieve RSA key from a JSON web key set(JWKS) endpoint(the one that Auth0 exposes under our domain/tenant)
 const checkScope = require("express-jwt-authz"); // Validates JWT scopes
 
+/* const {
+  VUE_APP_AUTH0_DOMAIN,
+  VUE_APP_AUTH0_AUDIENCE,
+  VUE_APP_API_URL,
+} = process.env; */
+
 // Express (endpoint) middleware
 const jwtCheck = jwt({
   // Dynamically provide a signing key based on the kid in the header and the signing keys provided by the JWKS endpoint.
@@ -12,12 +18,15 @@ const jwtCheck = jwt({
     cache: true, // cache the signing key
     rateLimit: true,
     jwksRequestsPerMinute: 5, // prevent attackers from requesting more than 5 per minute
-    jwksUri: `https://${process.env.VUE_APP_AUTH0_DOMAIN}/.well-known/jwks.json`,
+    // jwksUri: `https://${VUE_APP_AUTH0_DOMAIN}/.well-known/jwks.json`,
+    jwksUri: `https://pluralsight-reactjsauth0-dev.eu.auth0.com/.well-known/jwks.json`,
   }),
 
   // Validate the audience and the issuer.
-  audience: process.env.VUE_APP_AUTH0_AUDIENCE,
-  issuer: `https://${process.env.VUE_APP_AUTH0_DOMAIN}/`,
+  // audience: VUE_APP_AUTH0_AUDIENCE,
+  audience: "https://api.catalyz.co.uk",
+  // issuer: `https://${VUE_APP_AUTH0_DOMAIN}/`,
+  issuer: "https://pluralsight-reactjsauth0-dev.eu.auth0.com/",
 
   // This must match the algorithm selected in the Auth0 dashboard under your app's advanced settings under the OAuth tab
   algorithms: ["RS256"],
@@ -26,7 +35,8 @@ const jwtCheck = jwt({
 // Our own custom Express (endpoint) middleware - express middleware MUST return a function that accepts 3 arguments; request, response, next. next() is used to pass control on to the next item in the middleware chain or conclude it
 function checkRole(role) {
   return function(request, response, next) {
-    const assignedRoles = request.user["http://localhost:3000/roles"]; //auth0 rule shared with react implementation
+    // const assignedRoles = request.user[`${VUE_APP_API_URL}/roles`]; //auth0 rule shared with react implementation
+    const assignedRoles = request.user[`https://api.catalyz.co.uk/roles`]; //auth0 rule shared with react implementation
     if (Array.isArray(assignedRoles) && assignedRoles.includes(role)) {
       return next(); // DEVNOTE: calling next allows the next process in the chain to continue
     } else {
@@ -39,7 +49,7 @@ function checkRole(role) {
 const server = express();
 // server.use(jwtCheck); //DEVNOTE: would implement cross-wide need for authorisation token on all request from this server; circumventing the 'jwtCheck' function callback
 
-server.get("/public", function(request, response) {
+server.get("/", function(request, response) {
   response.json({
     message: "Hello from a public API!",
   });
@@ -75,4 +85,5 @@ server.get("/admin", jwtCheck, checkRole("admin"), function(request, response) {
 });
 
 server.listen(3333);
-console.log("API server listening on " + process.env.VUE_APP_API_URL);
+// console.log("API server listening on " + VUE_APP_API_URL);
+console.log("API server listening on https://api.catalyz.co.uk");

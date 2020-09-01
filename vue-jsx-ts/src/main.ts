@@ -80,8 +80,8 @@ const store: VuexStore<object> = new VuexStore({
 });*/
 
 function isAuthenticated(to: any, from: any, next: any): Function {
-  // if(auth.isAuthenticated()) return next();
-  if (store.getters.isAuthenticated) return next();
+  if (auth.isAuthenticated()) return next();
+  // if (store.getters.isAuthenticated) return next();
 
   return next({ path: "/" });
 }

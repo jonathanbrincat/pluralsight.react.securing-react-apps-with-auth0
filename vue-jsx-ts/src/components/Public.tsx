@@ -6,7 +6,8 @@ export default class Public extends Vue {
   private message: string = "";
 
   created(): void {
-    fetch("/public") //DEVNOTE: this is relative to Express server; made possible by proxy => vue.config.js
+    // fetch("/public") //DEVNOTE: this is relative to Express server; made possible by proxy => vue.config.js
+    fetch("https://api.catalyz.co.uk/public")
       .then((response) => {
         if (response.ok) return response.json();
         throw new Error("Network response was not ok.");

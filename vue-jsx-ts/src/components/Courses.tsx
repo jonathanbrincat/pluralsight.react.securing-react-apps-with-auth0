@@ -15,7 +15,8 @@ export default class Courses extends Vue {
   private message: string = "";
 
   created() {
-    fetch("/course", {
+    // fetch("/course", {
+    fetch("https://api.catalyz.co.uk/course", {
       headers: {
         Authorization: `Bearer ${this.auth.getAccessToken()}`,
       },

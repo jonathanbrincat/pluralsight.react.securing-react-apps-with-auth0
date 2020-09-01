@@ -9,7 +9,8 @@ export default class Private extends Vue {
   private message: string = "";
 
   created(): void {
-    fetch("/private", {
+    // fetch("/private", {
+    fetch("https://api.catalyz.co.uk/private", {
       headers: {
         Authorization: `Bearer ${this.auth.getAccessToken()}`,
       },

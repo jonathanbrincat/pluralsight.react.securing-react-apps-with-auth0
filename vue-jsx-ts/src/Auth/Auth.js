@@ -4,6 +4,14 @@ const REDIRECT_ON_LOGIN = "redirect_on_login";
 const ID_TOKEN = "id_token";
 const ACCESS_TOKEN = "access_token";
 
+const {
+  VUE_APP_AUTH0_DOMAIN,
+  VUE_APP_AUTH0_CLIENT_ID,
+  VUE_APP_AUTH0_CALLBACK_URL,
+  VUE_APP_AUTH0_AUDIENCE,
+  VUE_APP_HOST,
+} = process.env;
+
 export default class Auth {
   constructor(router) {
     this.history = router;
@@ -11,10 +19,10 @@ export default class Auth {
     this.requestedScopes = "openid profile email read:courses";
 
     this.auth0 = new Auth0.WebAuth({
-      domain: process.env.VUE_APP_AUTH0_DOMAIN,
-      clientID: process.env.VUE_APP_AUTH0_CLIENT_ID,
-      redirectUri: process.env.VUE_APP_AUTH0_CALLBACK_URL,
-      audience: process.env.VUE_APP_AUTH0_AUDIENCE, // Auth0 api identifier - the token sent by Auth0 will be associated with this audience
+      domain: VUE_APP_AUTH0_DOMAIN, //pluralsight-reactjsauth0-dev.eu.auth0.com
+      clientID: VUE_APP_AUTH0_CLIENT_ID, //QHzBgOgBZ6uMQtB34Z7CG75YYIJeU1Rb
+      redirectUri: VUE_APP_AUTH0_CALLBACK_URL, //https://catalyz.co.uk/callback
+      audience: VUE_APP_AUTH0_AUDIENCE, // Auth0 api identifier - the token sent by Auth0 will be associated with this audience //https://api.catalyz.co.uk
       responseType: "token id_token", // token = access token to access services/API id_token is our JET identification token
       scope: this.requestedScopes,
     });
@@ -40,8 +48,8 @@ export default class Auth {
 
       // this.history.push('/').catch(() => {});
       this.auth0.logout({
-        clientID: process.env.VUE_APP_AUTH0_CLIENT_ID,
-        returnTo: "http://localhost:8081",
+        clientID: VUE_APP_AUTH0_CLIENT_ID,
+        returnTo: VUE_APP_HOST,
       });
 
       this.onChange(false, null); // TEST
